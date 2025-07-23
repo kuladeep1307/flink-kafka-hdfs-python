@@ -207,6 +207,30 @@ def main():
         )
     """)
 
+    t_env.execute_sql("""
+        CREATE TABLE print_sink (
+          raw_type STRING,
+          raw_op STRING,
+          raw_table STRING,
+          raw_payload STRING,
+          raw_ts BIGINT
+        ) WITH (
+          'connector' = 'print'
+        )
+    """)
+    
+    t_env.execute_sql("""
+        INSERT INTO print_sink
+        SELECT 
+          `type`, 
+          operation, 
+          source_table, 
+          payload_sys_id,
+          `timestamp`
+        FROM kafka_source
+    """)
+
+
 
 
     # Execute insert
